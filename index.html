@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,500,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="data/assets/css/styles.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="data/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="data/favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <meta property="og:site_name" content="VD3D" />
+    <meta property="og:type" content="video.other" />
+    <meta property="og:title" content="VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control" />
+    <meta property="og:description" content="VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control." />
+    <meta property="og:url" content="" />
+
+</head>
+
+<body>
+    <div class="highlight-clean" style="padding-bottom: 0px; padding-top: 20px;">
+        <div class="container" style="max-width: 1024px; margin-bottom: 20px">
+            <h1 class="text-center" style="font-size:33px;"><b>VD3D</b>: Taming Large Video Diffusion Transformers for 3D Camera Control</h1>
+        </div>
+        <div class="container" style="max-width: 1024px; margin-bottom: 20px;">
+            <div class="authors" style="font-size:6px;">
+                <a href=https://sherwinbahmani.github.io/>
+                    Sherwin Bahmani<sup>1,2,3</sup>
+                </a>&nbsp;
+                <a href=https://universome.github.io/>
+                Ivan Skorokhodov<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://aliaksandrsiarohin.github.io/aliaksandr-siarohin-website/>
+                Aliaksandr Siarohin<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://www.willimenapace.com/>
+                Willi Menapace<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://guochengqian.github.io/>
+                Guocheng Qian<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://scholar.google.com/citations?user=LXBfhBcAAAAJ&hl=en/>
+                Michael Vasilkovsky<sup>3</sup>
+                </a>&nbsp;
+                <br>
+            </div>
+            <div class="authors">
+                <a href=http://hsinyinglee.com/>
+                Hsin-Ying Lee<sup>3</sup>&nbsp;
+                </a>
+                <a href=https://mightychaos.github.io/>
+                Chaoyang Wang<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://scholar.google.com.hk/citations?user=vjw1cJkAAAAJ&hl=en/>
+                Jiaxu Zou<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://taiya.github.io/>
+                Andrea Tagliasacchi<sup>1,4,5</sup>
+                </a>&nbsp;
+                <a href=https://davidlindell.com/>
+                David B. Lindell<sup>1,2</sup>
+                </a>&nbsp;
+                <a href=http://www.stulyakov.com/>
+                Sergey Tulyakov<sup>3</sup>
+                </a>&nbsp; 
+            </div>
+            <div class="affiliations">
+                <span><sup>1</sup>University of Toronto </span>
+                <span><sup>2</sup>Vector Institute </span>
+                <span><sup>3</sup>Snap Inc. </span>
+                <span><sup>4</sup>SFU </span>
+                <span><sup>5</sup>Google DeepMind </span>
+            </div>
+            <div class="container" style="max-width: 1024px; margin-bottom: 20px">
+                <h1 class="text-center" style="font-size:22px;">arXiv 2024</h1>
+            </div>
+        </div>
+        <div id="container">
+        <div class="buttons" style="margin-top: 8px; margin-bottom: 8px;">
+            <a class="btn btn-light" role="button" href="https://arxiv.org">
+                <svg style="width:24px;height:24px;margin-left:-12px;margin-right:12px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M16 0H8C6.9 0 6 .9 6 2V18C6 19.1 6.9 20 8 20H20C21.1 20 22 19.1 22 18V6L16 0M20 18H8V2H15V7H20V18M4 4V22H20V24H4C2.9 24 2 23.1 2 22V4H4M10 10V12H18V10H10M10 14V16H15V14H10Z"></path>
+                </svg>Paper
+            </a>
+            <a class="btn btn-light" role="button" href="gallery.html">
+                <svg style="width:24px;height:24px;margin-left:-12px;margin-right:12px" width="24px" height="24px" viewBox="0 0 375 531">
+                    <polygon stroke="#000000" points="0.5,0.866 459.5,265.87 0.5,530.874 "></polygon>
+                </svg>
+                Gallery
+            </a>
+        </div>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="compositional captioned_videos">
+            <video class="video lazy" autoplay loop playsinline muted>
+                <source data-src="data/videos/teaser.mp4" type="video/mp4"></source>
+            </video>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Abstract</h2>
+                    </div>
+                </div>
+                <p>
+                    Modern text-to-video synthesis models demonstrate coherent, photorealistic generation of complex videos from a text description. However, most existing models lack fine-grained control over camera movement, which is critical for downstream applications related to content creation, visual effects, and 3D vision. Recently, new methods demonstrate the ability to generate videos with controllable camera poses-these techniques leverage pre-trained U-Net-based diffusion models that explicitly disentangle spatial and temporal generation. Still, no existing approach enables camera control for new, transformer-based video diffusion models that process spatial and temporal information jointly. Here, we propose to tame video transformers for 3D camera control using a ControlNet-like conditioning mechanism that incorporates spatiotemporal camera embeddings based on Plucker coordinates. The approach demonstrates state-of-the-art performance for controllable video generation after fine-tuning on the RealEstate10K dataset. To the best of our knowledge, our work is the first to enable camera control for transformer-based video diffusion models.
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Method</h2>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-md-12">
+                <p>
+                    We adapt the Snap Video FIT architecture to incorporate camera control. We take as input the noisy input video, camera extrinsics, and camera intrinsics for each video frame. Using the camera parameters, we compute the Plücker coordinates for each pixel within the video frames. Both the input video and Plücker coordinate frames are converted to patch tokens, and we condition the video patch tokens using a mechanism similar to ControlNet. Then, the model estimates the denoised video by recurrent application of FIT blocks. Each block reads information from the patch tokens into a small set of latent tokens on which computation is performed. The results are written to the patch tokens in an iterative denoising diffusion process.
+                </p>
+                &nbsp;
+                <img src="data/method.png" alt="architecture" style="width: 100%">
+            </div>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>3D Camera Control for Dynamic Scenes</h2>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 0px;">
+            <div class="col-xs-33 compare-title  compare-title-sm">
+                <p>Reference Video</p>
+            </div>
+            <div class="col-xs-33 compare-title  compare-title-sm">
+                <p>Camera Input</p>
+            </div>
+            <div class="col-xs-33 compare-title">
+                <p>Camera Controlled Generation</p>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/25/00000_00429_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/25.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/25/00000_00429.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A trio of fashionable, beret-clad cats sips coffee at a chic Parisian cafe</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/30/00000_00140_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/30.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/30/00000_00140.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">An astronaut cooking with a pan and fire in the kitchen</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/47/00000_00009_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/47.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/47/00000_00009.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A cat sits at a grand piano, its paws gracefully tapping the keys</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/17/00000_00468_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/17.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/17/00000_00468.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A huge dinosaur skeleton is walking in a golden wheat field on a bright sunny day</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/18/00000_00006_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/18.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/18/00000_00006.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A man with a skull face in flames walking around Piccadilly circus</h6>
+            </div>
+        </div>
+        <div class="col-sm-4 my-auto center" style="margin-left:auto; margin-right: auto;">
+            <a href="gallery.html" class="btn btn-primary btn-lg btn-search">
+                More Results
+            </a>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>3D Camera Control for Real Image-to-Multiview Scenes</h2>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/image_to_multiview/cameras/0.png" width="164" height="164">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/image_to_multiview/cameras/1.png" width="164" height="164">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/image_to_multiview/cameras/2.png" width="164" height="164">
+                </div>
+                </center>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="0" loop playsinline autoPlay muted src="data/videos/image_to_multiview/bed/0.mp4" onplay="resizeAndPlay(this)"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="1" loop playsinline autoPlay muted src="data/videos/image_to_multiview/bed/1.mp4" onplay="resizeAndPlay(this)"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="2" loop playsinline autoPlay muted src="data/videos/image_to_multiview/bed/2.mp4" onplay="resizeAndPlay(this)"></video>
+                </div>
+            </div>
+            <h6 class="caption">A bedroom with a bed, lamps and a window</h6>
+        </div>
+
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="0" loop playsinline autoPlay muted src="data/videos/image_to_multiview/house/0.mp4" onplay="resizeAndPlay(this)"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="1" loop playsinline autoPlay muted src="data/videos/image_to_multiview/house/1.mp4" onplay="resizeAndPlay(this)"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="2" loop playsinline autoPlay muted src="data/videos/image_to_multiview/house/2.mp4" onplay="resizeAndPlay(this)"></video>
+                </div>
+            </div>
+            <h6 class="caption">A house sitting in the middle of a grassy field</h6>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Citation</h2>
+                <code>
+                    @article{bah2024VD3D,<br>
+                    &nbsp; author = {Bahmani, Sherwin and Skorokhodov, Ivan and Siarohin, Aliaksandr and Menapace, Willi and Qian, Guocheng and Vasilkovsky, Michael and Lee, Hsin-Ying and Wang, Chaoyang and Zou, Jiaxu and Tagliasacchi, Andrea and Lindell, David B. and Tulyakov, Sergey},<br>
+                    &nbsp; title  = {VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control},<br>
+                    &nbsp; journal = {arXiv},<br>
+                    &nbsp; year   = {2024},<br>
+                }</code></div>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <footer>
+            <p> Website template from <a href="https://dreamfusion3d.github.io/">DreamFusion</a> and <a href="https://mv-dream.github.io/">MVDream</a> . We thank the authors for the open-source code.</p>
+        </footer>
+    </div>
+    <script src="data/assets/js/yall.js"></script>
+    <script>
+        yall(
+            {
+                observeChanges: true
+            }
+        );
+    </script>
+</body>
+
+</html>

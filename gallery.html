@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,500,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="data/assets/css/styles.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="data/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="data/favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <!-- <meta name="robots" content="noindex"> -->
+
+    <meta property="og:site_name" content="VD3D" />
+    <meta property="og:type" content="video.other" />
+    <meta property="og:title" content="VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control" />
+    <meta property="og:description" content="VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control." />
+    <meta property="og:url" content="" />
+
+</head>
+
+<body>
+    <div class="highlight-clean" style="padding-bottom: 0px; padding-top: 20px;">
+        <div class="container" style="max-width: 1024px; margin-bottom: 20px">
+            <h1 class="text-center" style="font-size:33px;"><b>VD3D</b>: Taming Large Video Diffusion Transformers for 3D Camera Control</h1>
+        </div>
+        <div class="container" style="max-width: 1024px; margin-bottom: 20px;">
+            <div class="authors" style="font-size:6px;">
+                <a href=https://sherwinbahmani.github.io/>
+                    Sherwin Bahmani<sup>1,2,3</sup>
+                </a>&nbsp;
+                <a href=https://universome.github.io/>
+                Ivan Skorokhodov<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://aliaksandrsiarohin.github.io/aliaksandr-siarohin-website/>
+                Aliaksandr Siarohin<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://www.willimenapace.com/>
+                Willi Menapace<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://guochengqian.github.io/>
+                Guocheng Qian<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://scholar.google.com/citations?user=LXBfhBcAAAAJ&hl=en/>
+                Michael Vasilkovsky<sup>3</sup>
+                </a>&nbsp;
+                <br>
+            </div>
+            <div class="authors">
+                <a href=http://hsinyinglee.com/>
+                Hsin-Ying Lee<sup>3</sup>&nbsp;
+                </a>
+                <a href=https://mightychaos.github.io/>
+                Chaoyang Wang<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://scholar.google.com.hk/citations?user=vjw1cJkAAAAJ&hl=en/>
+                Jiaxu Zou<sup>3</sup>
+                </a>&nbsp;
+                <a href=https://taiya.github.io/>
+                Andrea Tagliasacchi<sup>1,4,5</sup>
+                </a>&nbsp;
+                <a href=https://davidlindell.com/>
+                David B. Lindell<sup>1,2</sup>
+                </a>&nbsp;
+                <a href=http://www.stulyakov.com/>
+                Sergey Tulyakov<sup>3</sup>
+                </a>&nbsp; 
+            </div>
+            <div class="affiliations">
+                <span><sup>1</sup>University of Toronto </span>
+                <span><sup>2</sup>Vector Institute </span>
+                <span><sup>3</sup>Snap Inc. </span>
+                <span><sup>4</sup>SFU </span>
+                <span><sup>5</sup>Google DeepMind </span>
+            </div>
+            <div class="container" style="max-width: 1024px; margin-bottom: 20px">
+                <h1 class="text-center" style="font-size:22px;">arXiv 2024</h1>
+            </div>
+        </div>
+        <div id="container">
+        <div class="buttons" style="margin-top: 8px; margin-bottom: 8px;">
+            <a class="btn btn-light" role="button" href="https://arxiv.org/">
+                <svg style="width:24px;height:24px;margin-left:-12px;margin-right:12px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M16 0H8C6.9 0 6 .9 6 2V18C6 19.1 6.9 20 8 20H20C21.1 20 22 19.1 22 18V6L16 0M20 18H8V2H15V7H20V18M4 4V22H20V24H4C2.9 24 2 23.1 2 22V4H4M10 10V12H18V10H10M10 14V16H15V14H10Z"></path>
+                </svg>Paper
+            </a>
+            <a class="btn btn-light" role="button" href="index.html">
+                <svg style="visibility:hidden;width:0px;height:24px;margin-left:-12px;margin-right:12px" width="0px" height="24px" viewBox="0 0 375 531">
+                    <polygon stroke="#000000" points="0.5,0.866 459.5,265.87 0.5,530.874 "></polygon>
+                </svg>
+                Project
+            </a>
+        </div>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/25/00000_00429_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/25.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/25/00000_00429.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A trio of fashionable, beret-clad cats sips coffee at a chic Parisian cafe</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/30/00000_00140_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/30.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/30/00000_00140.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">An astronaut cooking with a pan and fire in the kitchen</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/47/00000_00009_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/47.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/47/00000_00009.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A cat sits at a grand piano, its paws gracefully tapping the keys</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/17/00000_00468_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/17.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/17/00000_00468.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A huge dinosaur skeleton is walking in a golden wheat field on a bright sunny day</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/18/00000_00006_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/18.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/18/00000_00006.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A man with a skull face in flames walking around Piccadilly circus</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/27/00000_00131_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/27.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/27/00000_00131.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">Otters with chef hats, skillfully preparing a miniature sushi feast on a lily pad</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/31/00000_00056_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/31.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/31/00000_00056.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">An astronaut feeding ducks on a sunny afternoon, reflection from the water</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/37/00000_00015_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/37.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/37/00000_00015.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">Cats engage in a strategic chess match on an ornate board</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/38/00000_00221_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/38.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/38/00000_00221.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">In a chic urban kitchen, a cat donned in a chef's hat expertly kneads dough on a marble countertop</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/51/00000_00099_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/51.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/51/00000_00099.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">In a potter's studio, skilled hands mold clay into a delicate sculpture</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/59/00000_00055_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/59.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/59/00000_00055.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">Melting ice cream dripping down the cone</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/0/00000_00141_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/0.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/0/00000_00141.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">3 sheep enjoying spaghetti together</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/2/00000_00134_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/2.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/2/00000_00134.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A burning volcano</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/3/00000_00198_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/3.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/3/00000_00198.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A cat wearing sunglasses and working as a lifeguard at a pool</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/4/00000_00218_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/4.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/4/00000_00218.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A cat, dressed in detective attire, examines a magnifying glass over a crime scene made of scattered yarn</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/5/00000_00223_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/5.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/5/00000_00223.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A chihuahua in astronaut suit and sunglasses floating in space</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/8/00000_00000_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/8.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/8/00000_00000.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A couple enjoys a romantic gondola ride in Venice, Italy</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/9/00000_00261_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/9.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/9/00000_00261.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A cute golden hamster throwing punches wearing pair of boxing gloves in a boxing ring</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/14/00000_00186_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/14.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/14/00000_00186.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A hamster wearing virtual reality headsets is a dj in a disco</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/19/00000_00049_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/19.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/19/00000_00049.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A Corgi dog riding a bike in Times Square. It is wearing sunglasses and a beach hat</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/21/00000_00158_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/21.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/21/00000_00158.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A mouse in renaissance clothing eating a cheese slice</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/22/00000_00449_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/22.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/22/00000_00449.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A snowman in a Venetian gondola ride</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/23/00000_00165_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/23.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/23/00000_00165.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">A squirrel eating a burger</h6>
+            </div>
+        </div>
+        <div class="row captioned_videos">
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex3" loop playsinline autoPlay muted src="data/videos/ours/26/00000_00262_orig.mp4"></video>
+                </div>
+            </div>
+            <div class="col-4">
+                <center>
+                <div class="video-compare-container" style="width: 100%">
+                    <img src="data/videos/ours_cameras/26.png" width="128" height="128">
+                </div>
+                </center>
+            </div>
+            <div class="col-4">
+                <div class="video-compare-container" style="width: 100%">
+                    <video class="video lazy" id="ex16" loop playsinline autoPlay muted src="data/videos/ours/26/00000_00262.mp4"></video>
+                </div>
+                <h6 class="caption" style="font-size:12px;">Across a sun-soaked desert, two sports cars engage in a high-speed chase</h6>
+            </div>
+        </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Citation</h2>
+                <code>
+                    @article{bah2024VD3D,<br>
+                    &nbsp; author = {Bahmani, Sherwin and Skorokhodov, Ivan and Siarohin, Aliaksandr and Menapace, Willi and Qian, Guocheng and Vasilkovsky, Michael and Lee, Hsin-Ying and Wang, Chaoyang and Zou, Jiaxu and Tagliasacchi, Andrea and Lindell, David B. and Tulyakov, Sergey},<br>
+                    &nbsp; title  = {VD3D: Taming Large Video Diffusion Transformers for 3D Camera Control},<br>
+                    &nbsp; journal = {arXiv},<br>
+                    &nbsp; year   = {2024},<br>
+                }</code></div>
+        </div>
+    </div>
+    <hr class="divider" />
+    <div class="container" style="max-width: 768px;">
+        <footer>
+            <p> Website template from <a href="https://dreamfusion3d.github.io/">DreamFusion</a> and <a href="https://mv-dream.github.io/">MVDream</a> . We thank the authors for the open-source code.</p>
+        </footer>
+    </div>
+    <script src="data/assets/js/yall.js"></script>
+    <script>
+        yall(
+            {
+                observeChanges: true
+            }
+        );
+    </script>
+</body>
+
+</html>
