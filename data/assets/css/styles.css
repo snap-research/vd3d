@@ -747,6 +747,12 @@ hr.divider {
 .col-xs-33 {
     width: 33.33%;
 }
+.col-xs-66 {
+    width: 66.66%;
+}
+.col-xs-64 {
+    width: 64.0%;
+}
 .col-xs-2 {
     width: 50.0%;
 }
