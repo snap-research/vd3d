@@ -714,6 +714,11 @@ hr.divider {
     max-width: 900px !important;
 }
 
+.row.search .col-sm-12_left {
+    max-width: 900px !important;
+    text-align: left;
+}
+
 .disappearing {
     transition-property: background-color;
     transition-duration: 2s;
